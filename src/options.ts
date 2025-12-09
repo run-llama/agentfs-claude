@@ -11,7 +11,6 @@ import { fileSystemMCP } from "./mcp";
 import { consoleInput } from "./cli";
 import { filesToParseExtensions } from "./filesystem";
 
-
 async function denyFileSystemToolsHook(
   // eslint-disable-next-line
   _input: PreToolUseHookInput,
@@ -39,8 +38,8 @@ async function askToPersistFileWrite(
   _options: { signal: AbortSignal },
 ): Promise<HookJSONOutput> {
   const toolInput = input.tool_input;
-  let filePath = ""
-  let fileContent = ""
+  let filePath = "";
+  let fileContent = "";
   if (typeof toolInput === "object" && toolInput != null) {
     if ("filePath" in toolInput) {
       filePath = toolInput.filePath as string;
@@ -49,17 +48,23 @@ async function askToPersistFileWrite(
       fileContent = toolInput.fileContent as string;
     }
   }
-  if (filePath != "" && fileContent != "" && !filesToParseExtensions.includes("." + filePath.split(".").at(1))) {
-      console.log(`Would you allow Claude to write ${filePath} with the above content in your real file-system? [y/n]`)
-      const answer = await consoleInput("Your answer: ")
-      if (["y", "yes", "yse"].includes(answer.toLowerCase().trim())) {
-        await fs.writeFile(filePath, fileContent)
-        return {async: true, continue: true} as HookJSONOutput;
-      } else {
-        return {async: true, continue: true} as HookJSONOutput;
+  if (
+    filePath != "" &&
+    fileContent != "" &&
+    !filesToParseExtensions.includes("." + filePath.split(".").at(1))
+  ) {
+    console.log(
+      `Would you allow Claude to write ${filePath} with the above content in your real file-system? [y/n]`,
+    );
+    const answer = await consoleInput("Your answer: ");
+    if (["y", "yes", "yse"].includes(answer.toLowerCase().trim())) {
+      await fs.writeFile(filePath, fileContent);
+      return { async: true, continue: true } as HookJSONOutput;
+    } else {
+      return { async: true, continue: true } as HookJSONOutput;
     }
   }
-  return {async: true, continue: true} as HookJSONOutput;
+  return { async: true, continue: true } as HookJSONOutput;
 }
 
 async function askToPersistFileEdit(
@@ -70,9 +75,9 @@ async function askToPersistFileEdit(
   _options: { signal: AbortSignal },
 ): Promise<HookJSONOutput> {
   const toolInput = input.tool_input;
-  let filePath = ""
-  let oldString = ""
-  let newString = ""
+  let filePath = "";
+  let oldString = "";
+  let newString = "";
   if (typeof toolInput === "object" && toolInput != null) {
     if ("filePath" in toolInput) {
       filePath = toolInput.filePath as string;
@@ -84,19 +89,26 @@ async function askToPersistFileEdit(
       newString = toolInput.newString as string;
     }
   }
-  if (filePath != "" && oldString != "" && newString != "" && !filesToParseExtensions.includes("." + filePath.split(".").at(1))) {
-      console.log(`Would you allow Claude to edit ${filePath} with the above content in your real file-system? [y/n]`)
-      const answer = await consoleInput("Your answer: ")
-      if (["y", "yes", "yse"].includes(answer.toLowerCase().trim())) {
-        const content = await fs.readFile(filePath, {encoding: "utf-8"});
-        const editedContent = content.replace(oldString, newString);
-        await fs.writeFile(filePath, editedContent);
-        return {async: true, continue: true} as HookJSONOutput;
-      } else {
-        return {async: true, continue: true} as HookJSONOutput;
+  if (
+    filePath != "" &&
+    oldString != "" &&
+    newString != "" &&
+    !filesToParseExtensions.includes("." + filePath.split(".").at(1))
+  ) {
+    console.log(
+      `Would you allow Claude to edit ${filePath} with the above content in your real file-system? [y/n]`,
+    );
+    const answer = await consoleInput("Your answer: ");
+    if (["y", "yes", "yse"].includes(answer.toLowerCase().trim())) {
+      const content = await fs.readFile(filePath, { encoding: "utf-8" });
+      const editedContent = content.replace(oldString, newString);
+      await fs.writeFile(filePath, editedContent);
+      return { async: true, continue: true } as HookJSONOutput;
+    } else {
+      return { async: true, continue: true } as HookJSONOutput;
     }
   }
-  return {async: true, continue: true} as HookJSONOutput;
+  return { async: true, continue: true } as HookJSONOutput;
 }
 
 const hooks: Partial<Record<HookEvent, HookCallbackMatcher[]>> = {
@@ -115,7 +127,7 @@ const hooks: Partial<Record<HookEvent, HookCallbackMatcher[]>> = {
       matcher: "mcp__filesystem__edit_file",
       hooks: [askToPersistFileEdit],
     } as HookCallbackMatcher,
-  ]
+  ],
 };
 
 export const systemPrompt = `

@@ -34,8 +34,8 @@ export const filesToParseExtensions = [
   ".docx",
   ".doc",
   ".pptx",
-  ".xlsx"
-]
+  ".xlsx",
+];
 
 async function getFilesInDir({
   dirPath = "./",
@@ -66,12 +66,12 @@ async function getFilesInDir({
         const ext = "." + pt.split(".").at(-1);
         if (
           (typeof mimeType === "string" && mimeType.startsWith("text/")) ||
-          (commonCodeExtenstions.includes(ext))
+          commonCodeExtenstions.includes(ext)
         ) {
           const content = await fs.readFile(pt, { encoding: "utf-8" });
           files.push({ filePath: pt, content: content });
         } else if (filesToParseExtensions.includes(ext)) {
-          const content = await parseFile(pt)
+          const content = await parseFile(pt);
           files.push({ filePath: pt, content: content });
         }
       }
@@ -130,7 +130,7 @@ export async function writeFile(
   agentfs: AgentFS,
 ): Promise<boolean> {
   if (!filePath.startsWith("/")) {
-    filePath = "/" + filePath
+    filePath = "/" + filePath;
   }
   try {
     await agentfs.fs.writeFile(filePath, fileContent);
@@ -148,7 +148,7 @@ export async function editFile(
   agentfs: AgentFS,
 ): Promise<string | null> {
   if (!filePath.startsWith("/")) {
-    filePath = "/" + filePath
+    filePath = "/" + filePath;
   }
   let editedContent: string | null = null;
   try {
@@ -168,7 +168,7 @@ export async function fileExists(
 ): Promise<boolean> {
   try {
     if (!filePath.startsWith("/")) {
-      filePath = "/" + filePath
+      filePath = "/" + filePath;
     }
     const dirPath = path.dirname(filePath);
     const files = await agentfs.fs.readdir(dirPath);
