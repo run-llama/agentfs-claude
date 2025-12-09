@@ -54,6 +54,16 @@ The integration with LlamaIndex Workflows offers the perfect harnessed environme
 - The prompt from the user and other information (resume a session, use plan mode or not) are collected from the user directly using human-in-the-loop
 - The agent runs in its own step, when everything is ready
 
+## Example prompt
+
+Run the agent in this directory, and prompt it with:
+
+```text
+Explore all the available files to you, find the task file, read it and act in accordance with it. If needed, read other files (such as the document on observability in LlamaIndex Workflows).
+```
+
+In this sense, the agent should first list all the files, then read `data/task.docx` and follow the task in it, also reading `data/observability_in_llamaindex_workflows.pdf` since the task asks for instrumentation of a LlamaIndex Workflows.
+
 ## Contributing
 
 If you wish to contribute, make sure that your code follows the formatting and linting guidelines, running:
