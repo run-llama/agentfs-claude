@@ -21,10 +21,12 @@ async function main() {
   }>();
   const stopEvent = workflowEvent<{ success: boolean; error: string | null }>();
 
+  const notFromScratch = fs.existsSync("fs.db");
+
   const agentFs = await getAgentFS({});
 
   workflow.handle([startEvent], async (_context, event) => {
-    if (fs.existsSync("fs.db")) {
+    if (notFromScratch) {
       return filesRegisteredEvent.with();
     }
     const wd = event.data.workingDirectory;

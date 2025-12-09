@@ -6,6 +6,7 @@ const reader = new LlamaParseReader({
   apiKey: apiKey,
   fastMode: true,
   checkInterval: 4,
+  verbose: true,
 });
 
 export async function parseFile(filePath: string): Promise<string> {
