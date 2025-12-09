@@ -5,18 +5,8 @@ import { getAgentFS } from "./mcp";
 import { Agent } from "./claude";
 import { queryOptions } from "./options";
 import { bold } from "@visulima/colorize";
-import * as readline from "readline/promises";
-
-async function consoleInput(question: string): Promise<string> {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  const answer = await rl.question(question);
-  rl.close();
-  return answer;
-}
+import { consoleInput } from "./cli";
+import * as fs from "fs";
 
 async function main() {
   const { withState } = createStatefulMiddleware(() => ({}));
@@ -34,6 +24,9 @@ async function main() {
   const agentFs = await getAgentFS({});
 
   workflow.handle([startEvent], async (_context, event) => {
+    if (fs.existsSync("fs.db")) {
+      return filesRegisteredEvent.with();
+    }
     const wd = event.data.workingDirectory;
     let dirPath: string | undefined = wd;
     if (typeof wd === "undefined") {

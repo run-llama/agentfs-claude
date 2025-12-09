@@ -37,6 +37,7 @@
     "@modelcontextprotocol/sdk": "^1.24.3",
     "@visulima/colorize": "^1.4.29",
     "agentfs-sdk": "^0.2.1",
+    "llama-cloud-services": "^0.4.3",
     "mime-types": "^3.0.2",
     "zod": "3.25.76"
   }

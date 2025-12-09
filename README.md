@@ -1,6 +1,6 @@
 # Claude + AgentFS + LlamaIndex Workflows
 
-A demo where we run Claude Code within a fully-virtualized file system ([AgentFS](https://github.com/tursodatabase/agentfs)), orchestrating it with [LlamaIndex Workflows](https://github.com/run-llama/workflows-ts).
+A demo where we run Claude Code within a fully-virtualized file system ([AgentFS](https://github.com/tursodatabase/agentfs)), orchestrating it with [LlamaIndex Workflows](https://github.com/run-llama/workflows-ts) and adding the possibility of reading unstructured files (e.g. PDFs or Word/Google docs) with [LlamaCloud](https://cloud.llamaindex.ai).
 
 ## Set Up and Run
 
@@ -43,6 +43,7 @@ All the [filesystem-bound operations](./src/filesystem.ts) are performed on the 
 What happens under the hood when the agent is running:
 
 - All text-based files in the current directory are uploaded to a [LibSQL](https://github.com/tursodatabase/libsql) database and indexed
+- Non text-based files (namely in PDF/DOCX/DOC/PPTX/XLSX format) are parsed by [LlamaParse](https://cloud.llamaindex.ai) and uploaded with their content converted to markdown text
 - When the agent performs a filesystem-bound operation, it calls one of the tools from the `filesystem` MCP
 - Other tools (such as WebSearch/Todo/Task) run normally
 - If the agent was to call one of the disallowed tools (Read, Write, Edit and Glob), a `PreToolUse` hook would deny the tool call and redirect the agent to using the `filesystem` MCP tools

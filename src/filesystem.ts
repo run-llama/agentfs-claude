@@ -3,6 +3,7 @@ import { type FileWithContent } from "./types";
 import path from "path";
 import * as mime from "mime-types";
 import { AgentFS } from "agentfs-sdk";
+import { parseFile } from "./llamacloud";
 
 const commonCodeExtenstions = [
   ".py",
@@ -27,6 +28,14 @@ const commonCodeExtenstions = [
   ".rb",
   ".r",
 ];
+
+export const filesToParseExtensions = [
+  ".pdf",
+  ".docx",
+  ".doc",
+  ".pptx",
+  ".xlsx"
+]
 
 async function getFilesInDir({
   dirPath = "./",
@@ -57,9 +66,12 @@ async function getFilesInDir({
         const ext = "." + pt.split(".").at(-1);
         if (
           (typeof mimeType === "string" && mimeType.startsWith("text/")) ||
-          (typeof ext === "string" && commonCodeExtenstions.includes(ext))
+          (commonCodeExtenstions.includes(ext))
         ) {
           const content = await fs.readFile(pt, { encoding: "utf-8" });
+          files.push({ filePath: pt, content: content });
+        } else if (filesToParseExtensions.includes(ext)) {
+          const content = await parseFile(pt)
           files.push({ filePath: pt, content: content });
         }
       }
@@ -117,6 +129,9 @@ export async function writeFile(
   fileContent: string,
   agentfs: AgentFS,
 ): Promise<boolean> {
+  if (!filePath.startsWith("/")) {
+    filePath = "/" + filePath
+  }
   try {
     await agentfs.fs.writeFile(filePath, fileContent);
     return true;
@@ -132,6 +147,9 @@ export async function editFile(
   newString: string,
   agentfs: AgentFS,
 ): Promise<string | null> {
+  if (!filePath.startsWith("/")) {
+    filePath = "/" + filePath
+  }
   let editedContent: string | null = null;
   try {
     const content = (await agentfs.fs.readFile(filePath, "utf-8")) as string;
@@ -149,6 +167,9 @@ export async function fileExists(
   agentfs: AgentFS,
 ): Promise<boolean> {
   try {
+    if (!filePath.startsWith("/")) {
+      filePath = "/" + filePath
+    }
     const dirPath = path.dirname(filePath);
     const files = await agentfs.fs.readdir(dirPath);
     for (const file of files) {

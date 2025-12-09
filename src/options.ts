@@ -3,9 +3,14 @@ import {
   HookEvent,
   HookJSONOutput,
   Options,
+  PostToolUseHookInput,
   PreToolUseHookInput,
 } from "@anthropic-ai/claude-agent-sdk";
+import * as fs from "fs/promises";
 import { fileSystemMCP } from "./mcp";
+import { consoleInput } from "./cli";
+import { filesToParseExtensions } from "./filesystem";
+
 
 async function denyFileSystemToolsHook(
   // eslint-disable-next-line
@@ -26,6 +31,74 @@ async function denyFileSystemToolsHook(
   };
 }
 
+async function askToPersistFileWrite(
+  input: PostToolUseHookInput,
+  // eslint-disable-next-line
+  _toolUseId: string | undefined,
+  // eslint-disable-next-line
+  _options: { signal: AbortSignal },
+): Promise<HookJSONOutput> {
+  const toolInput = input.tool_input;
+  let filePath = ""
+  let fileContent = ""
+  if (typeof toolInput === "object" && toolInput != null) {
+    if ("filePath" in toolInput) {
+      filePath = toolInput.filePath as string;
+    }
+    if ("fileContent" in toolInput) {
+      fileContent = toolInput.fileContent as string;
+    }
+  }
+  if (filePath != "" && fileContent != "" && !filesToParseExtensions.includes("." + filePath.split(".").at(1))) {
+      console.log(`Would you allow Claude to write ${filePath} with the above content in your real file-system? [y/n]`)
+      const answer = await consoleInput("Your answer: ")
+      if (["y", "yes", "yse"].includes(answer.toLowerCase().trim())) {
+        await fs.writeFile(filePath, fileContent)
+        return {async: true, continue: true} as HookJSONOutput;
+      } else {
+        return {async: true, continue: true} as HookJSONOutput;
+    }
+  }
+  return {async: true, continue: true} as HookJSONOutput;
+}
+
+async function askToPersistFileEdit(
+  input: PostToolUseHookInput,
+  // eslint-disable-next-line
+  _toolUseId: string | undefined,
+  // eslint-disable-next-line
+  _options: { signal: AbortSignal },
+): Promise<HookJSONOutput> {
+  const toolInput = input.tool_input;
+  let filePath = ""
+  let oldString = ""
+  let newString = ""
+  if (typeof toolInput === "object" && toolInput != null) {
+    if ("filePath" in toolInput) {
+      filePath = toolInput.filePath as string;
+    }
+    if ("oldString" in toolInput) {
+      oldString = toolInput.oldString as string;
+    }
+    if ("newString" in toolInput) {
+      newString = toolInput.newString as string;
+    }
+  }
+  if (filePath != "" && oldString != "" && newString != "" && !filesToParseExtensions.includes("." + filePath.split(".").at(1))) {
+      console.log(`Would you allow Claude to edit ${filePath} with the above content in your real file-system? [y/n]`)
+      const answer = await consoleInput("Your answer: ")
+      if (["y", "yes", "yse"].includes(answer.toLowerCase().trim())) {
+        const content = await fs.readFile(filePath, {encoding: "utf-8"});
+        const editedContent = content.replace(oldString, newString);
+        await fs.writeFile(filePath, editedContent);
+        return {async: true, continue: true} as HookJSONOutput;
+      } else {
+        return {async: true, continue: true} as HookJSONOutput;
+    }
+  }
+  return {async: true, continue: true} as HookJSONOutput;
+}
+
 const hooks: Partial<Record<HookEvent, HookCallbackMatcher[]>> = {
   PreToolUse: [
     {
@@ -33,6 +106,16 @@ const hooks: Partial<Record<HookEvent, HookCallbackMatcher[]>> = {
       hooks: [denyFileSystemToolsHook],
     } as HookCallbackMatcher,
   ],
+  PostToolUse: [
+    {
+      matcher: "mcp__filesystem__write_file",
+      hooks: [askToPersistFileWrite],
+    } as HookCallbackMatcher,
+    {
+      matcher: "mcp__filesystem__edit_file",
+      hooks: [askToPersistFileEdit],
+    } as HookCallbackMatcher,
+  ]
 };
 
 export const systemPrompt = `
