@@ -5,7 +5,7 @@ import { getAgentFS } from "./mcp";
 import { Agent } from "./claude";
 import { queryOptions } from "./options";
 import { bold } from "@visulima/colorize";
-import { consoleInput } from "./cli";
+import { consoleInput, renderLogo } from "./cli";
 import * as fs from "fs";
 
 async function main() {
@@ -26,6 +26,7 @@ async function main() {
   const agentFs = await getAgentFS({});
 
   workflow.handle([startEvent], async (_context, event) => {
+    await renderLogo();
     if (notFromScratch) {
       return filesRegisteredEvent.with();
     }
