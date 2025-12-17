@@ -1,0 +1,15 @@
+model = "gpt-4.1"
+model_provider = "openai-chat-completions"
+
+[model_providers.openai-chat-completions]
+name = "OpenAI using Chat Completions"
+base_url = "https://api.openai.com/v1"
+env_key = "OPENAI_API_KEY"
+wire_api = "chat"
+
+[mcp_servers.filesystem]
+command = "pnpm"
+args = ["run", "mcp-start"]
+
+[mcp_servers.filesystem.env]
+cwd = "/Users/<user>/agentfs-claude/"

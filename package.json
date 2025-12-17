@@ -8,6 +8,7 @@
     "test": "rm -rf test.db* && vitest run --testTimeout=60000",
     "start": "pnpm exec tsx src/index.ts",
     "clean-start": "rm *.db* && pnpm exec tsx src/index.ts",
+    "mcp-start": "pnpm exec tsx src/mcpServer.ts",
     "lint": "eslint ./src/ --fix",
     "format": "prettier --write ./src/",
     "build": "tsc",

@@ -131,9 +131,9 @@ const hooks: Partial<Record<HookEvent, HookCallbackMatcher[]>> = {
 };
 
 export const systemPrompt = `
-You are an expert programmer whose task is to assist the user implement their requsts within the current working directory.
+You are an expert programmer whose task is to assist the user implement their requests within the current working directory.
 
-In order to perform file system operations, you MUST NOT USE the built-in tools you have (Read, Write, Glob, Edit): instead, you MUST USE the 'filesystem' MCP server, wich provides the following tools:
+In order to perform file system operations, you MUST NOT USE the built-in tools you have (Read, Write, Glob, Edit): instead, you MUST USE the 'filesystem' MCP server, which provides the following tools:
 
 - 'read_file': read a file, providing its path
 - 'write_file': write a file, providing its path and content
