@@ -38,6 +38,7 @@
     "@anthropic-ai/claude-agent-sdk": "^0.1.59",
     "@llamaindex/workflow-core": "^1.3.3",
     "@modelcontextprotocol/sdk": "^1.24.3",
+    "@openai/codex-sdk": "^0.73.0",
     "@visulima/colorize": "^1.4.29",
     "agentfs-sdk": "^0.2.1",
     "figlet": "^1.9.4",
