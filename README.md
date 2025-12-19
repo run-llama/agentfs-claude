@@ -1,6 +1,6 @@
-# Claude + AgentFS + LlamaIndex Workflows
+# Coding Agent + AgentFS + LlamaIndex Workflows
 
-A demo where we run Claude Code within a fully-virtualized file system ([AgentFS](https://github.com/tursodatabase/agentfs)), orchestrating it with [LlamaIndex Workflows](https://github.com/run-llama/workflows-ts) and adding the possibility of reading unstructured files (e.g. PDFs or Word/Google docs) with [LlamaCloud](https://cloud.llamaindex.ai).
+A demo where we run Claude Code or Codex within a fully-virtualized file system ([AgentFS](https://github.com/tursodatabase/agentfs)), orchestrating it with [LlamaIndex Workflows](https://github.com/run-llama/workflows-ts) and adding the possibility of reading unstructured files (e.g. PDFs or Word/Google docs) with [LlamaCloud](https://cloud.llamaindex.ai).
 
 ## Set Up and Run
 
@@ -18,13 +18,27 @@ pnpm install
 # you can use other package managers, but pnpm is preferred
 ```
 
+If you wish to use the demo with Codex, you need to install the Codex SDK separately (given the size of the library - 140+ MB - its download it disabled by default):
+
+```bash
+pnpm add @openai/codex-sdk
+```
+
+Moreover, if you wish to run the demo with Codex, you also need to start the MCP server (from a different terminal window, but within the same directory):
+
+```bash
+pnpm run mcp-start
+```
+
+The MCP will be live on `http://localhost:3000/mcp`, and you will need to add the MCP configuration in [config.toml](./codex/config.toml) to the global Codex configuration in `$HOME/.codex/config.toml`. If you want Codex to use the filesystem MCP by default, you will also need to copy the [AGENTS.md](./codex/AGENTS.md) file, containing the instructions on how to use the server.
+
 Now run the demo with:
 
 ```bash
 # for the first time
 pnpm run start
 
-# for follow-ups
+# If you want to add more files to the database
 pnpm run clean-start
 ```
 

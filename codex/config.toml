@@ -1,0 +1,7 @@
+[features]
+rmcp_client = true
+
+[mcp_servers.filesystem]
+url = "http://localhost:3000/mcp"
+startup_timeout_sec =  30
+tool_timeout_sec = 30

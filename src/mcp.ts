@@ -10,16 +10,16 @@ import {
 } from "./filesystem";
 import { tool, createSdkMcpServer } from "@anthropic-ai/claude-agent-sdk";
 
-const readSchemaShape = {
+export const readSchemaShape = {
   filePath: z.string().describe("Path of the file to read"),
 };
 
-const writeSchemaShape = {
+export const writeSchemaShape = {
   filePath: z.string().describe("Path of the file to write"),
   fileContent: z.string().describe("Content of the file"),
 };
 
-const editSchemaShape = {
+export const editSchemaShape = {
   filePath: z.string().describe("Path of the file to write"),
   oldString: z.string().describe("Old string in the file (to replace)"),
   newString: z
@@ -27,13 +27,13 @@ const editSchemaShape = {
     .describe("New string with which to replace the old string"),
 };
 
-const fileExistsSchemaShape = {
+export const fileExistsSchemaShape = {
   filePath: z
     .string()
     .describe("Path of the file whose existence has to be checked"),
 };
 
-const listFilesSchemaShape = {};
+export const listFilesSchemaShape = {};
 
 // eslint-disable-next-line
 const readSchema = z.object(readSchemaShape);

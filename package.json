@@ -8,6 +8,7 @@
     "test": "rm -rf test.db* && vitest run --testTimeout=60000",
     "start": "pnpm exec tsx src/index.ts",
     "clean-start": "rm *.db* && pnpm exec tsx src/index.ts",
+    "mcp-start": "pnpm exec tsx src/mcpServer.ts",
     "lint": "eslint ./src/ --fix",
     "format": "prettier --write ./src/",
     "build": "tsc",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
     "@eslint/js": "^9.39.1",
+    "@types/express": "^5.0.6",
     "@types/figlet": "^1.7.0",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^24.10.1",
@@ -37,11 +39,18 @@
     "@anthropic-ai/claude-agent-sdk": "^0.1.59",
     "@llamaindex/workflow-core": "^1.3.3",
     "@modelcontextprotocol/sdk": "^1.24.3",
+    "@openai/codex-sdk": "^0.73.0",
     "@visulima/colorize": "^1.4.29",
     "agentfs-sdk": "^0.2.1",
+    "express": "^5.2.1",
     "figlet": "^1.9.4",
     "llama-cloud-services": "^0.4.3",
     "mime-types": "^3.0.2",
     "zod": "3.25.76"
+  },
+  "pnpm": {
+    "overrides": {
+      "@openai/codex-sdk": "-"
+    }
   }
 }

@@ -8,7 +8,7 @@ export async function consoleInput(question: string): Promise<string> {
     output: process.stdout,
   });
 
-  const answer = await rl.question(question);
+  const answer = await rl.question(bold(question));
   rl.close();
   return answer;
 }
